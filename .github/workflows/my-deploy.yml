@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Building Docker image
+        with: 
+          context: .
+          file: ./Dockefile
         run: docker build .
       - name: All done
         run: echo "All done in ${{ github.repository }}"   
