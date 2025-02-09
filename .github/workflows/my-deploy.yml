@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Building Docker image
-        uses: docker://alpine:3.8
         run: docker build .
       - name: All done
         run: echo "All done in ${{ github.repository }}"   
