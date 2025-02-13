@@ -15,7 +15,7 @@ jobs:
         run: docker build . -t ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.DOCKER_LOGIN }}" | docker login ghcr.io -u sergeev-s --password-stdin      
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u sergeev-s --password-stdin      
 
       - name: Push image to ghcr
         run: docker push ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
