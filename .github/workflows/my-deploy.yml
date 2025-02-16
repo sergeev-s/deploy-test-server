@@ -34,7 +34,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             docker stop my-app || true
             docker rm my-app || true
-            docker run -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
+            docker run -d -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
 
       - name: All done
         run: echo "All done in ${{ github.repository }}"   
