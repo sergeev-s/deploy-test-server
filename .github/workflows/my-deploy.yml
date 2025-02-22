@@ -31,10 +31,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker login ghcr.io -u sergeev-s -p "${{ secrets.GITHUB_TOKEN }}"
-            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-            docker stop deploy-test-server || true
-            docker rm deploy-test-server || true
-            docker run -d --name deploy-test-server -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
+            docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }} || true
+            docker ps -q --filter "name=deploy-test-server_" | --no-run-if-empty docker stop
+            docker ps -aq --filter "name=deploy-test-server_" | --no-run-if-empty docker rm
+            docker run -d --name deploy-test-server_1 -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
+            docker run -d --name deploy-test-server_2 -p 8081:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
 
       - name: All done
         run: echo "All done in ${{ github.repository }}"   
