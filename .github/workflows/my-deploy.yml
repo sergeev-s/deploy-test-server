@@ -1,6 +1,6 @@
 name: my-deploy
-on: 
-  push: 
+on:
+  push:
     branches:
       - main
       - dev
@@ -18,11 +18,11 @@ jobs:
         run: docker build . -t ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u sergeev-s --password-stdin      
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u sergeev-s --password-stdin
 
       - name: Push image to ghcr
         run: docker push ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-        
+
       - name: Deploy to YandexCloud vm
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -32,10 +32,13 @@ jobs:
           script: |
             docker login ghcr.io -u sergeev-s -p "${{ secrets.GITHUB_TOKEN }}"
             docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }} || true
-            docker ps -q --filter "name=deploy-test-server_" | --no-run-if-empty docker stop
-            docker ps -aq --filter "name=deploy-test-server_" | --no-run-if-empty docker rm
-            docker run -d --name deploy-test-server_1 -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
-            docker run -d --name deploy-test-server_2 -p 8081:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}   
+            docker stop deploy-test-server_1 || true
+            docker rm deploy-test-server_1 || true
+            docker run -d --name deploy-test-server_1 -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+
+            docker stop deploy-test-server_2 || true
+            docker rm deploy-test-server_2 || true   
+            docker run -d --name deploy-test-server_2 -p 8081:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: All done
-        run: echo "All done in ${{ github.repository }}"   
+        run: echo "All done in ${{ github.repository }}"
