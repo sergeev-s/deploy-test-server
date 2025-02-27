@@ -32,12 +32,13 @@ jobs:
           script: |
             docker login ghcr.io -u sergeev-s -p "${{ secrets.GITHUB_TOKEN }}"
             docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }} || true
+            docker network create deploy-test-net || true
             docker stop deploy-test-server_1 || true
             docker rm deploy-test-server_1 || true
             docker run -d --name deploy-test-server_1 --network deploy-test-net ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
             docker stop deploy-test-server_2 || true
-            docker rm deploy-test-server_2 || true   
+            docker rm deploy-test-server_2 || true
             docker run -d --name deploy-test-server_2 --network deploy-test-net ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: All done
