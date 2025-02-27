@@ -34,11 +34,11 @@ jobs:
             docker pull ghcr.io/${{ github.repository }}:${{ github.ref_name }} || true
             docker stop deploy-test-server_1 || true
             docker rm deploy-test-server_1 || true
-            docker run -d --name deploy-test-server_1 -p 8080:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            docker run -d --name deploy-test-server_1 --network deploy-test-net ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
             docker stop deploy-test-server_2 || true
             docker rm deploy-test-server_2 || true   
-            docker run -d --name deploy-test-server_2 -p 8081:5000 ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            docker run -d --name deploy-test-server_2 --network deploy-test-net ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: All done
         run: echo "All done in ${{ github.repository }}"
